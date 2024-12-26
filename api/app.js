@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
+const path = require('path');
 require('dotenv/config');
 
 app.use(cors());
@@ -12,7 +13,8 @@ app.use(express.json());
 // Load base API URL from the .env file or default to '/api/v1'
 const API_URL = process.env.API_URL || '/api/v1';
 console.log(`API routes base URL: ${API_URL}`);
-
+// Serve static files (images) from a specific directory
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 // Routes
 app.use(`${API_URL}/auth`, require('./routes/authRoutes'));

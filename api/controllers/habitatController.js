@@ -15,23 +15,41 @@ exports.getHabitatById = async (req, res) => {
     try {
         const habitat = await Habitat.findById(req.params.id).populate('animals');
         if (!habitat) return res.status(404).json({ message: 'Habitat not found' });
+        console.log('habitatdetails',habitat);
         res.status(200).json(habitat);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
 
+
 // Create a habitat
 exports.createHabitat = async (req, res) => {
     const { name, description } = req.body;
+
+    // Validate required fields
+    if (!name || !description) {
+        return res.status(400).json({ message: 'Name and description are required.' });
+    }
+
+    // Check if file is uploaded
+    const imageUrl = req.file ? `${req.protocol}://${req.get('host')}/images/${req.file.filename}` : null;
+
     try {
-        const newHabitat = new Habitat({ name, description });
+        // Create new habitat with image URL
+        const newHabitat = new Habitat({
+            name,
+            description,
+            imagesUrl: [imageUrl], // Save the image URL(s) in the database
+        });
+
         await newHabitat.save();
         res.status(201).json(newHabitat);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
+
 
 // Update a habitat
 exports.updateHabitat = async (req, res) => {
