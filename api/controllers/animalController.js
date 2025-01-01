@@ -1,10 +1,15 @@
 const Animal = require('../models/Animal'); // MongoDB Animal model
 const Habitat = require ('../models/Habitat');
 
+
 // Get all animals
 exports.getAllAnimals = async (req, res) => {
     try {
-        const animals = await Animal.find().populate('habitat'); // Remove .populate('race')
+        const animals = await Animal.find().populate('habitat') 
+        .populate({ 
+            path: 'vetReports', 
+            model: 'VetReport' 
+        });
         res.status(200).json(animals);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -14,20 +19,33 @@ exports.getAllAnimals = async (req, res) => {
 // Get animal by ID
 exports.getAnimalById = async (req, res) => {
     try {
-        const animal = await Animal.findById(req.params.id).populate('habitat'); // Remove .populate('race')
+        const animal = await Animal.findById(req.params.id) .populate('habitat') 
+        .populate({ 
+            path: 'vetReports', 
+            model: 'VetReport' 
+        });
         if (!animal) return res.status(404).json({ message: 'Animal not found' });
         res.status(200).json(animal);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
-// Create a new animal
+
 // Create a new animal
 exports.createAnimal = async (req, res) => {
     const { name, race, habitat } = req.body;
+    
+   
+    const imageUrl = req.file ? `${req.protocol}://${req.get('host')}/images/${req.file.filename}` : null;
     try {
         // Create the new animal
-        const newAnimal = new Animal({ name, race, habitat });
+        const newAnimal = new Animal
+        ({ 
+            name, 
+            race,
+            habitat,
+            imagesUrl: [imageUrl],
+        });
         await newAnimal.save();
   
         // Update the corresponding habitat to include this animal
@@ -40,6 +58,7 @@ exports.createAnimal = async (req, res) => {
         }
   
         res.status(201).json(newAnimal);
+        console.log(res)
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

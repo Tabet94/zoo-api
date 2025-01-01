@@ -1,4 +1,5 @@
-const VetReport = require('../models/VetReport'); // MongoDB VetReport model
+const VetReport = require('../models/VetReport'); 
+const Animal = require ('../models/Animal')
 
 // Get all veterinarian reports
 exports.getAllVetReports = async (req, res) => {
@@ -22,15 +23,16 @@ exports.getVetReportsByAnimal = async (req, res) => {
 
 // Create a vet report
 exports.createVetReport = async (req, res) => {
-    const { animal, state, food, quantity, date, details } = req.body;
     try {
-        const newReport = new VetReport({ animal, state, food, quantity, date, details });
-        await newReport.save();
+        const { animalId } = req.params; // Extract animalId from the URL
+        const reportData = { ...req.body, animal: animalId };
+        const newReport = await VetReport.create(reportData);
         res.status(201).json(newReport);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
+        console.log(reportData)
+      } catch (error) {
+        res.status(400).json({ message: error.message });
+      }
+    };
 
 // Update a vet report
 exports.updateVetReport = async (req, res) => {
