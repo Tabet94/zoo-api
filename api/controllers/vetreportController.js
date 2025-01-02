@@ -26,13 +26,23 @@ exports.createVetReport = async (req, res) => {
     try {
         const { animalId } = req.params; // Extract animalId from the URL
         const reportData = { ...req.body, animal: animalId };
+
+        // Create the new vet report
         const newReport = await VetReport.create(reportData);
+
+        // Add the new vet report to the animal's vetReports array
+        await Animal.findByIdAndUpdate(
+            animalId,
+            { $push: { vetReports: newReport._id } },
+            { new: true }
+        );
+
         res.status(201).json(newReport);
-        console.log(reportData)
-      } catch (error) {
+        console.log(reportData);
+    } catch (error) {
         res.status(400).json({ message: error.message });
-      }
-    };
+    }
+};
 
 // Update a vet report
 exports.updateVetReport = async (req, res) => {
