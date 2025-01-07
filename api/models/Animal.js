@@ -5,7 +5,9 @@ const animalSchema = new mongoose.Schema({
   habitat: { type: mongoose.Schema.Types.ObjectId, ref: 'Habitat' },
   race: { type: String, required: true },
   imagesUrl: [{ type: String }],
-  vetReports: [{ type: mongoose.Schema.Types.ObjectId, ref: 'VetReport' }], 
+  vetReports: [{ type: mongoose.Schema.Types.ObjectId, ref: 'VetReport' }],
+  foodRecords: [{ type: mongoose.Schema.Types.ObjectId, ref: 'FoodRecord' }],  
+
 });
 
 

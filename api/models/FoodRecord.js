@@ -10,10 +10,7 @@ const foodRecordSchema = new mongoose.Schema({
         type: Date,
         required: true,
     },
-    time: {
-        type: String,
-        required: true,
-    },
+    
     food: {
         type: String,
         required: true,

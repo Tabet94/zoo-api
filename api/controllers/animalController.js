@@ -1,13 +1,16 @@
 const Animal = require('../models/Animal'); // MongoDB Animal model
 const Habitat = require('../models/Habitat');
 const VetReport = require('../models/VetReport'); // MongoDB VetReport model
+const FoodRecord = require('../models/FoodRecord')
 
 // Get all animals
 exports.getAllAnimals = async (req, res) => {
     try {
         const animals = await Animal.find()
             .populate('habitat')
-            .populate('vetReports'); // Include related VetReports
+            .populate('vetReports')
+            .populate('foodRecords')
+             
         
         res.status(200).json(animals);
     } catch (error) {
@@ -20,7 +23,8 @@ exports.getAnimalById = async (req, res) => {
     try {
         const animal = await Animal.findById(req.params.id)
             .populate('habitat')
-            .populate('vetReports'); // Include related VetReports
+            .populate('vetReports')
+            .populate('foodRecords')
         
         if (!animal) return res.status(404).json({ message: 'Animal not found' });
         res.status(200).json(animal);
@@ -76,8 +80,9 @@ exports.deleteAnimal = async (req, res) => {
         const deletedAnimal = await Animal.findByIdAndDelete(req.params.id);
         if (!deletedAnimal) return res.status(404).json({ message: 'Animal not found' });
 
-        // Remove the associated vetReports
+        // Remove the associated 
         await VetReport.deleteMany({ animal: req.params.id });
+        await FoodRecord.deleteMany({ animal: req.params.id });
 
         res.status(200).json({ message: 'Animal and associated vet reports deleted successfully' });
     } catch (error) {
