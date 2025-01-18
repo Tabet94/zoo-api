@@ -2,6 +2,7 @@ const Animal = require('../models/Animal'); // MongoDB Animal model
 const Habitat = require('../models/Habitat');
 const VetReport = require('../models/VetReport'); // MongoDB VetReport model
 const FoodRecord = require('../models/FoodRecord')
+const Stat = require('../models/Stat')
 
 // Get all animals
 exports.getAllAnimals = async (req, res) => {
@@ -18,15 +19,33 @@ exports.getAllAnimals = async (req, res) => {
     }
 };
 
-// Get animal by ID
+
+
 exports.getAnimalById = async (req, res) => {
     try {
+        // Find the animal by ID and populate references
         const animal = await Animal.findById(req.params.id)
             .populate('habitat')
             .populate('vetReports')
             .populate('foodRecords')
-        
+            .populate('stats'); // Include stats in population
+
         if (!animal) return res.status(404).json({ message: 'Animal not found' });
+
+        // Increment the views count in the associated stats
+        if (animal.stats) {
+            await Stat.findByIdAndUpdate(
+                animal.stats._id,
+                { $inc: { views: 1 } }, // Increment views by 1
+                { new: true } // Return the updated document
+            );
+        } else {
+            // Optionally create a stats document if none exists
+            const newStat = await Stat.create({ animal: animal._id, views: 1 });
+            animal.stats = newStat._id;
+            await animal.save();
+        }
+
         res.status(200).json(animal);
     } catch (error) {
         res.status(500).json({ message: error.message });

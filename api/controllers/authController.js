@@ -49,16 +49,14 @@ exports.registerEmployee = async (req, res) => {
     const existingUser = await User.findOne({ email });
     if (existingUser) return res.status(400).json({ message: 'Email already in use' });
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newEmployee = new User({ email, username, password: hashedPassword, role: 'employee' });
-    await newEmployee.save();
+    const newEmployee = new User({ email, username, password, role: 'employee' });
+    await newEmployee.save(); // Password hashing handled by middleware
     res.status(201).json({ message: 'Employee registered successfully' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// Register veterinarian (Admin only)
 exports.registerVet = async (req, res) => {
   const { email, username, password } = req.body;
 
@@ -70,12 +68,11 @@ exports.registerVet = async (req, res) => {
     const existingUser = await User.findOne({ email });
     if (existingUser) return res.status(400).json({ message: 'Email already in use' });
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newVet = new User({ email, username, password: hashedPassword, role: 'veterinarian' });
-    await newVet.save();
+    const newVet = new User({ email, username, password, role: 'veterinarian' });
+    await newVet.save(); // Password hashing handled by middleware
     res.status(201).json({ message: 'Veterinarian registered successfully' });
   } catch (error) {
-    console.error("Registration error:", error);
     res.status(500).json({ message: error.message });
   }
 };
+

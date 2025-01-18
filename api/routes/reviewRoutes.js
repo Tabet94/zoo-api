@@ -1,18 +1,20 @@
 const express = require('express');
-const router = express.Router();
-const { 
-    createReview, 
-    getAllReviews, 
-    approveReview, 
-    deleteReview 
+const {
+  createReview,
+  getAllReviews,
+  getReviewById,
+  updateReview,
+  deleteReview,
+  toggleReviewVisibility,
 } = require('../controllers/reviewController');
 
-// Visitor route
-router.post('/', createReview); // Submit a new review
+const router = express.Router();
 
-// Admin/Employee routes
-router.get('/', getAllReviews); // List all reviews (pending and approved)
-router.put('/:id/approve', approveReview); // Approve a review
-router.delete('/:id', deleteReview); // Delete a review
+// Define the routes
+router.post('/', createReview);
+router.get('/', getAllReviews);
+router.get('/:id', getReviewById);
+router.delete('/:id', deleteReview);
+router.patch('/:id/toggle-visibility', toggleReviewVisibility);
 
 module.exports = router;
