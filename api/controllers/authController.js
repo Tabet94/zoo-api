@@ -9,14 +9,15 @@ exports.login = async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      
+      console.log("User not found for email:", email);
       return res.status(404).json({ message: 'User not found' });
     }
 
-    
+    console.log("Plaintext Password:", password);
+    console.log("Stored Hash:", user.password);
 
     const isMatch = await bcrypt.compare(password, user.password);
-    
+    console.log("Password Match:", isMatch);
 
     if (!isMatch) {
       return res.status(401).json({ message: 'Invalid credentials' });
@@ -30,7 +31,7 @@ exports.login = async (req, res) => {
 
     res.status(200).json({ token });
   } catch (error) {
-   
+    console.error("Login error:", error);
     res.status(500).json({ message: 'Server error. Please try again later.' });
   }
 };
@@ -48,14 +49,16 @@ exports.registerEmployee = async (req, res) => {
     const existingUser = await User.findOne({ email });
     if (existingUser) return res.status(400).json({ message: 'Email already in use' });
 
-    const newEmployee = new User({ email, username, password, role: 'employee' });
-    await newEmployee.save(); // Password hashing handled by middleware
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newEmployee = new User({ email, username, password: hashedPassword, role: 'employee' });
+    await newEmployee.save();
     res.status(201).json({ message: 'Employee registered successfully' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
+// Register veterinarian (Admin only)
 exports.registerVet = async (req, res) => {
   const { email, username, password } = req.body;
 
@@ -67,11 +70,12 @@ exports.registerVet = async (req, res) => {
     const existingUser = await User.findOne({ email });
     if (existingUser) return res.status(400).json({ message: 'Email already in use' });
 
-    const newVet = new User({ email, username, password, role: 'veterinarian' });
-    await newVet.save(); // Password hashing handled by middleware
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newVet = new User({ email, username, password: hashedPassword, role: 'veterinarian' });
+    await newVet.save();
     res.status(201).json({ message: 'Veterinarian registered successfully' });
   } catch (error) {
+    console.error("Registration error:", error);
     res.status(500).json({ message: error.message });
   }
 };
-
