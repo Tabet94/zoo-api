@@ -4,8 +4,19 @@ const cors = require('cors');
 const path = require('path');
 require('dotenv/config');
 
-app.use(cors());
-app.options('*', cors())
+// CORS Configuration
+const allowedOrigins = ['https://zoo-rouge.vercel.app'];
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+  })
+);
 
 // Middleware
 app.use(express.json());
