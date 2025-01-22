@@ -27,7 +27,7 @@ exports.addFoodRecord = async (req, res) => {
            );
    
            res.status(201).json(newRecord);
-           console.log(recordData);
+           
        } catch (error) {
            res.status(400).json({ message: error.message });
        }

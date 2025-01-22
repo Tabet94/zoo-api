@@ -9,15 +9,14 @@ exports.login = async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      console.log("User not found for email:", email);
+      
       return res.status(404).json({ message: 'User not found' });
     }
 
-    console.log("Plaintext Password:", password);
-    console.log("Stored Hash:", user.password);
+    
 
     const isMatch = await bcrypt.compare(password, user.password);
-    console.log("Password Match:", isMatch);
+    
 
     if (!isMatch) {
       return res.status(401).json({ message: 'Invalid credentials' });
@@ -31,7 +30,7 @@ exports.login = async (req, res) => {
 
     res.status(200).json({ token });
   } catch (error) {
-    console.error("Login error:", error);
+   
     res.status(500).json({ message: 'Server error. Please try again later.' });
   }
 };

@@ -15,7 +15,7 @@ exports.getHabitatById = async (req, res) => {
     try {
         const habitat = await Habitat.findById(req.params.id).populate('animals');
         if (!habitat) return res.status(404).json({ message: 'Habitat not found' });
-        console.log('habitatdetails',habitat);
+       
         res.status(200).json(habitat);
     } catch (error) {
         res.status(500).json({ message: error.message });
