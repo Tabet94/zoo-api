@@ -4,25 +4,27 @@ const cors = require('cors');
 const path = require('path');
 require('dotenv/config');
 
-// CORS Configuration
-const allowedOrigins = [
-    'https://zoo-rouge.vercel.app',
-    'https://zoo-tabets-projects-e195060b.vercel.app',
-    'https://zoo-2qqa1lcg7-tabets-projects-e195060b.vercel.app',
-  ];
+app.use(cors());
+app.options('*', cors())
+
+// const allowedOrigins = [
+//     'https://zoo-rouge.vercel.app',
+//     'https://zoo-tabets-projects-e195060b.vercel.app',
+//     'https://zoo-2qqa1lcg7-tabets-projects-e195060b.vercel.app',
+//   ];
   
-  app.use(
-    cors({
-      origin: function (origin, callback) {
-        if (!origin || allowedOrigins.includes(origin)) {
-          callback(null, true); // Allow the request
-        } else {
-          callback(new Error('Not allowed by CORS')); // Reject the request
-        }
-      },
-    })
-  );
-  
+//   app.use(
+//     cors({
+//       origin: function (origin, callback) {
+//         if (!origin || allowedOrigins.includes(origin)) {
+//           callback(null, true); // Allow the request
+//         } else {
+//           callback(new Error('Not allowed by CORS')); // Reject the request
+//         }
+//       },
+//     })
+//   );
+
 // Middleware
 app.use(express.json());
 
