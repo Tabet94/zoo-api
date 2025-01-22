@@ -25,6 +25,7 @@ app.use(`${API_URL}/reviews`, require('./routes/reviewRoutes'));
 app.use(`${API_URL}/foodrecord`, require('./routes/foodrecordRoutes'));
 app.use(`${API_URL}/vetreport`, require('./routes/vetreportRoutes'));
 app.use(`${API_URL}/stat`, require('./routes/animalstatsRoutes'));
+app.use(`${API_URL}/contact`, require('./routes/ContactRoutes'));
 
 
 module.exports = app;
