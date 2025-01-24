@@ -33,14 +33,14 @@ exports.createHabitat = async (req, res) => {
     }
 
     // Check if file is uploaded
-    const imageUrl = req.file ? `${req.protocol}://${req.get('host')}/images/${req.file.filename}` : null;
+    const imageUrl = req.file ? req.file.path : null;
 
     try {
         // Create new habitat with image URL
         const newHabitat = new Habitat({
             name,
             description,
-            imagesUrl: [imageUrl], // Save the image URL(s) in the database
+            imagesUrl: imageUrl ? [imageUrl] : [], // Save the image URL(s) in the database
         });
 
         await newHabitat.save();

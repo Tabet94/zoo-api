@@ -56,7 +56,7 @@ exports.createAnimal = async (req, res) => {
     const { name, race, habitat } = req.body;
 
     // Use Cloudinary URL if file is uploaded
-    const imageUrl = req.file ? req.file.CLOUDINARY_URL : null;
+    const imageUrl = req.file ? req.file.path : null;
 
     try {
         // Create the new animal
@@ -64,7 +64,7 @@ exports.createAnimal = async (req, res) => {
             name,
             race,
             habitat,
-            imagesUrl: [imageUrl], // Assuming multiple images in the future
+            imagesUrl: imageUrl ? [imageUrl] : [], // Assuming multiple images in the future
         });
         await newAnimal.save();
 
