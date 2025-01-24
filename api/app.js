@@ -45,7 +45,7 @@ app.post('/upload', upload.single('image'), (req, res) => {
     // File uploaded successfully
     res.status(200).json({
       message: 'File uploaded successfully!',
-      url: req.file.path, // Cloudinary URL for the uploaded image
+      url: req.file.CLOUDINARY_URL, // Cloudinary URL for the uploaded image
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
