@@ -52,18 +52,19 @@ exports.getAnimalById = async (req, res) => {
     }
 };
 
-// Create a new animal
 exports.createAnimal = async (req, res) => {
     const { name, race, habitat } = req.body;
 
-    const imageUrl = req.file ? `${req.protocol}://${req.get('host')}/images/${req.file.filename}` : null;
+    // Use Cloudinary URL if file is uploaded
+    const imageUrl = req.file ? req.file.CLOUDINARY_URL : null;
+
     try {
         // Create the new animal
         const newAnimal = new Animal({
             name,
             race,
             habitat,
-            imagesUrl: [imageUrl],
+            imagesUrl: [imageUrl], // Assuming multiple images in the future
         });
         await newAnimal.save();
 
@@ -76,11 +77,12 @@ exports.createAnimal = async (req, res) => {
             );
         }
 
-        res.status(201).json(newAnimal);
+        res.status(201).json(newAnimal); // Return the newly created animal
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ message: error.message }); // Return the error message
     }
 };
+
 
 // Update animal details
 exports.updateAnimal = async (req, res) => {
