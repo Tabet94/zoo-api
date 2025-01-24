@@ -34,7 +34,7 @@ app.use(express.json());
 // Load base API URL from the .env file or default to '/api/v1'
 const API_URL = process.env.API_URL || '/api/v1';
 console.log(`API routes base URL: ${API_URL}`);
-// Route to upload an image
+
 
 app.post('/upload', upload.single('image'), (req, res) => {
   try {
