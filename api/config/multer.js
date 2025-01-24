@@ -1,22 +1,24 @@
 const multer = require('multer');
+const { v2: cloudinary } = require('cloudinary');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
-const MIME_TYPES = {
-
-    'image/jpg': 'jpg',
-    'image/jpeg': 'jpeg',
-    'image/png': 'png'
-};
-
-const storage = multer.diskStorage({
-    destination: (req, file, callback) => {
-    callback(null, 'images');
-},
-
-filename: (req, file, callback) => {
-    const name = file.originalname.split(' ').join('_');
-    const extension = MIME_TYPES[file.mimetype];
-    callback(null, name + Date.now() + '.' + extension);
-}
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: 'dqfedwayp',  // Replace with your Cloudinary cloud name
+  api_key: process.env.API_KEY, // Cloudinary API key (stored in environment variables)
+  api_secret: process.env.API_SECRET // Cloudinary API secret (stored in environment variables)
 });
 
-module.exports = multer({storage: storage}).single('image');
+// Set up Cloudinary storage
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'zoo_images',           // Folder name in your Cloudinary account
+    allowed_formats: ['jpg', 'jpeg', 'png'], // Allowed file formats
+  },
+});
+
+// Configure multer to use Cloudinary storage
+const upload = multer({ storage });
+
+module.exports = upload; // Export the multer instance
